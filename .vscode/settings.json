@@ -1,0 +1,33 @@
+{
+  // Prettier como formatador padrão
+  "editor.defaultFormatter": "esbenp.prettier-vscode",
+
+  // Formatar automaticamente ao salvar
+  "editor.formatOnSave": true,
+
+  // Corrigir automaticamente ESLint ao salvar
+  "editor.codeActionsOnSave": {
+    "source.fixAll": true,
+    "source.fixAll.eslint": true
+  },
+
+  // Configurações adicionais do editor
+  "files.eol": "\n",
+  "files.trimTrailingWhitespace": true,
+  "files.insertFinalNewline": true,
+  "files.autoSave": "off",
+
+  // Controle de sugestões do ESLint
+  "eslint.validate": [
+    "javascript",
+    "javascriptreact",
+    "typescript",
+    "typescriptreact"
+  ],
+
+  // Prettier: seguir regras do projeto
+  "prettier.requireConfig": true,
+
+  // Opções do terminal integrado
+  "terminal.integrated.shell.windows": "C:\\Windows\\System32\\WindowsPowerShell\\v1.0\\powershell.exe"
+}
