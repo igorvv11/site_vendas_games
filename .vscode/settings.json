@@ -1,14 +1,13 @@
 {
   // Prettier como formatador padrão
   "editor.defaultFormatter": "esbenp.prettier-vscode",
-
   // Formatar automaticamente ao salvar
   "editor.formatOnSave": true,
 
   // Corrigir automaticamente ESLint ao salvar
   "editor.codeActionsOnSave": {
-    "source.fixAll": true,
-    "source.fixAll.eslint": true
+    "source.fixAll": "explicit",
+    "source.fixAll.eslint": "explicit"
   },
 
   // Configurações adicionais do editor
