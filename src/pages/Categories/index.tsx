@@ -1,104 +1,50 @@
 import ProductList from "../../components/ProductList";
-import Game from "../../models/Game";
+import {
+  useGetActionGamesQuery,
+  useGetFightingGamesQuery,
+  useGetSimulationGamesQuery,
+  useGetSportsGamesQuery,
+  useGetRPGGamesQuery,
+} from "../../services/api";
 
-import resident from "../../assets/images/resident.png";
-import diablo from "../../assets/images/diablo.png";
-import zelda from "../../assets/images/zelda.png";
-import starwars from "../../assets/images/star_wars.png";
+const Categories = () => {
+  const { data: actionGames } = useGetActionGamesQuery();
+  const { data: sportGames } = useGetSportsGamesQuery();
+  const { data: figthGames } = useGetFightingGamesQuery();
+  const { data: rpgGames } = useGetRPGGamesQuery();
+  const { data: simulationGames } = useGetSimulationGamesQuery();
 
-const promocoes: Game[] = [
-  {
-    id: 1,
-    category: "Ação",
-    description:
-      "Resident Evil 4, conhecido no Japão como Biohazard 4, é um jogo eletronico de survival horror...",
-    title: "Residente Evil 4",
-    image: resident,
-    infos: ["10%", "R$250,00"],
-    system: "windowns",
-  },
-  {
-    id: 2,
-    category: "Ação",
-    description:
-      "Resident Evil 4, conhecido no Japão como Biohazard 4, é um jogo eletronico de survival horror...",
-    title: "Residente Evil 4",
-    image: resident,
-    infos: ["5%", "R$290,00"],
-    system: "PS5",
-  },
-  {
-    id: 3,
-    category: "Ação",
-    description:
-      "Resident Evil 4, conhecido no Japão como Biohazard 4, é um jogo eletronico de survival horror...",
-    title: "Residente Evil 4",
-    image: resident,
-    infos: ["10%", "R$250,00"],
-    system: "windowns",
-  },
-  {
-    id: 4,
-    category: "Ação",
-    description:
-      "Resident Evil 4, conhecido no Japão como Biohazard 4, é um jogo eletronico de survival horror...",
-    title: "Residente Evil 4",
-    image: resident,
-    infos: ["10%", "R$250,00"],
-    system: "windowns",
-  },
-];
-
-const emBreve: Game[] = [
-  {
-    id: 5,
-    category: "RPG",
-    description:
-      "Diblo IV é um RPG de ação em desevolvimento pela Blizzard Entretainment",
-    title: "Diablo Iv",
-    image: diablo,
-    infos: ["17/05"],
-    system: "windowns",
-  },
-  {
-    id: 6,
-    category: "RPG",
-    description:
-      "Diblo IV é um RPG de ação em desevolvimento pela Blizzard Entretainment",
-    title: "Zelda",
-    image: zelda,
-    infos: ["17/05"],
-    system: "windowns",
-  },
-  {
-    id: 7,
-    category: "RPG",
-    description:
-      "Diblo IV é um RPG de ação em desevolvimento pela Blizzard Entretainment",
-    title: "Star Wars",
-    image: starwars,
-    infos: ["17/05"],
-    system: "windowns",
-  },
-  {
-    id: 8,
-    category: "RPG",
-    description:
-      "Diblo IV é um RPG de ação em desevolvimento pela Blizzard Entretainment",
-    title: "Resident Evil 4",
-    image: resident,
-    infos: ["17/05"],
-    system: "=Nintendo Switch",
-  },
-];
-
-const Categories = () => (
-  <>
-    <ProductList games={promocoes} title="RPG" background="gray" />
-    <ProductList games={emBreve} title="Ação" background="black" />
-    <ProductList games={promocoes} title="Aventura" background="gray" />
-    <ProductList games={emBreve} title="FPS" background="black" />
-  </>
-);
-
+  if (actionGames && sportGames && figthGames && rpgGames && simulationGames) {
+    return (
+      <>
+        <ProductList
+          games={actionGames}
+          title="Ação"
+          background="black"
+          id="action"
+        />
+        <ProductList
+          games={sportGames}
+          title="Esportes"
+          background="gray"
+          id="sports"
+        />
+        <ProductList
+          games={figthGames}
+          title="Luta"
+          background="black"
+          id="fight"
+        />
+        <ProductList games={rpgGames} title="RPG" background="gray" id="rpg" />
+        <ProductList
+          games={simulationGames}
+          title="Simulação"
+          background="black"
+          id="simulation"
+        />
+      </>
+    );
+  }
+  return <h4>Carregando...</h4>;
+};
 export default Categories;

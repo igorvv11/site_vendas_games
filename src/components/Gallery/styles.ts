@@ -1,0 +1,92 @@
+import styled from "styled-components";
+import { cores } from "../../styles";
+
+export const Items = styled.ul`
+  display: flex;
+  gap: 16px;
+  flex-wrap: wrap;
+`;
+
+export const Action = styled.div`
+  position: absolute;
+  top: 0px;
+  right: 0px;
+  background-color: rgba(0, 0, 0, 0.73);
+  width: 100%;
+  height: 100%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: 8px;
+  opacity: 0;
+  transition: opacity 0.5s;
+`;
+
+export const Item = styled.li`
+  position: relative;
+  list-style: none;
+
+  > img {
+    border: 2px solid ${cores.branca};
+    width: 150px;
+    height: 150px;
+    border-radius: 8px;
+    object-fit: cover;
+  }
+  &:hover ${Action} {
+    opacity: 1;
+    cursor: pointer;
+    transition: opacity 0.5s;
+  }
+`;
+
+export const Modal = styled.div`
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  z-index: 1;
+  display: none;
+  align-items: center;
+  justify-content: center;
+
+  &.visible {
+    display: flex;
+  }
+  .overlay {
+    position: absolute;
+    top: 0px;
+    right: 0px;
+    background-color: rgba(0, 0, 0, 0.73);
+    width: 100%;
+    height: 100%;
+    display: flex;
+  }
+`;
+
+export const ModalContent = styled.div`
+  /* max-width: 960px; */
+  position: relative;
+  z-index: 1;
+
+  header {
+    display: flex;
+    margin-bottom: 24px;
+    display: flex;
+    justify-content: space-between;
+
+    h4 {
+      font-size: 18px;
+      font-weight: bold;
+    }
+  }
+  > img {
+    width: 100%;
+  }
+
+  img {
+    display: block;
+    max-width: 100%;
+  }
+`;

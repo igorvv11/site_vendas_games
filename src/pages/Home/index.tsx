@@ -1,104 +1,60 @@
 import Banner from "../../components/Banner";
 import ProductList from "../../components/ProductList";
-import Game from "../../models/Game";
 
-import resident from "../../assets/images/resident.png";
-import diablo from "../../assets/images/diablo.png";
-import zelda from "../../assets/images/zelda.png";
-import starwars from "../../assets/images/star_wars.png";
+import { useGetOnSaleQuery, useGetSoonQuery } from "../../services/api";
 
-const promocoes: Game[] = [
-  {
-    id: 1,
-    category: "Ação",
-    description:
-      "Resident Evil 4, conhecido no Japão como Biohazard 4, é um jogo eletronico de survival horror...",
-    title: "Residente Evil 4",
-    image: resident,
-    infos: ["10%", "R$250,00"],
-    system: "windowns",
-  },
-  {
-    id: 2,
-    category: "Ação",
-    description:
-      "Resident Evil 4, conhecido no Japão como Biohazard 4, é um jogo eletronico de survival horror...",
-    title: "Residente Evil 4",
-    image: resident,
-    infos: ["5%", "R$290,00"],
-    system: "PS5",
-  },
-  {
-    id: 3,
-    category: "Ação",
-    description:
-      "Resident Evil 4, conhecido no Japão como Biohazard 4, é um jogo eletronico de survival horror...",
-    title: "Residente Evil 4",
-    image: resident,
-    infos: ["10%", "R$250,00"],
-    system: "windowns",
-  },
-  {
-    id: 4,
-    category: "Ação",
-    description:
-      "Resident Evil 4, conhecido no Japão como Biohazard 4, é um jogo eletronico de survival horror...",
-    title: "Residente Evil 4",
-    image: resident,
-    infos: ["10%", "R$250,00"],
-    system: "windowns",
-  },
-];
+export interface GalleryItem {
+  type: "image" | "video";
+  url: string;
+}
 
-const emBreve: Game[] = [
-  {
-    id: 5,
-    category: "RPG",
-    description:
-      "Diblo IV é um RPG de ação em desevolvimento pela Blizzard Entretainment",
-    title: "Diablo Iv",
-    image: diablo,
-    infos: ["17/05"],
-    system: "windowns",
-  },
-  {
-    id: 6,
-    category: "RPG",
-    description:
-      "Diblo IV é um RPG de ação em desevolvimento pela Blizzard Entretainment",
-    title: "Zelda",
-    image: zelda,
-    infos: ["17/05"],
-    system: "windowns",
-  },
-  {
-    id: 7,
-    category: "RPG",
-    description:
-      "Diblo IV é um RPG de ação em desevolvimento pela Blizzard Entretainment",
-    title: "Star Wars",
-    image: starwars,
-    infos: ["17/05"],
-    system: "windowns",
-  },
-  {
-    id: 8,
-    category: "RPG",
-    description:
-      "Diblo IV é um RPG de ação em desevolvimento pela Blizzard Entretainment",
-    title: "Resident Evil 4",
-    image: resident,
-    infos: ["17/05"],
-    system: "=Nintendo Switch",
-  },
-];
+export type Game = {
+  id: number;
+  name: string;
+  description: string;
+  release_date?: string;
+  prices: {
+    old?: number;
+    discount?: number;
+    current?: number;
+  };
+  details: {
+    category: string;
+    developer: string;
+    publisher: string;
+    system: string;
+    languages: string[];
+  };
+  media: {
+    cover: string;
+    thumbnail: string;
+    gallery: GalleryItem[];
+  };
+};
 
-const Home = () => (
-  <>
-    <Banner />
-    <ProductList games={promocoes} title="Promoções" background="gray" />
-    <ProductList games={emBreve} title="Em breve" background="black" />
-  </>
-);
+const Home = () => {
+  const { data: onSaleGames } = useGetOnSaleQuery();
+  const { data: soonGames } = useGetSoonQuery();
+  if (onSaleGames && soonGames) {
+    return (
+      <>
+        <Banner />
+        <ProductList
+          games={onSaleGames}
+          title="Promoções"
+          background="gray"
+          id="on-sale"
+        />
+        <ProductList
+          games={soonGames}
+          title="Em breve"
+          background="black"
+          id="coming-soon"
+        />
+      </>
+    );
+  }
+  return <h4>Carregando...</h4>;
+};
 
 export default Home;
