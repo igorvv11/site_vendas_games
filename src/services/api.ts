@@ -1,9 +1,43 @@
 import { createApi, fetchBaseQuery } from "@reduxjs/toolkit/query/react";
 import { Game } from "../pages/Home";
 
+type Product = {
+  id: number;
+  price: number;
+};
+
+type PurchasePayload = {
+  products: [Product];
+  billing: {
+    name: string;
+    email: string;
+    document: string;
+  };
+  delivery: {
+    email: string;
+  };
+  payment: {
+    card: {
+      active: boolean;
+      owner?: {
+        name: string;
+        document: string;
+      };
+      name?: string;
+      number?: string;
+      expires?: {
+        month: number;
+        year: number;
+      };
+      code?: number;
+    };
+    installments: number;
+  };
+};
+
 const api = createApi({
   baseQuery: fetchBaseQuery({
-    baseUrl: "https://ebac-fake-api.vercel.app/api/eplay",
+    baseUrl: "https://api-ebac.vercel.app/api/eplay",
   }),
   endpoints: (builder) => ({
     getFeatureGames: builder.query<Game, void>({
@@ -33,6 +67,13 @@ const api = createApi({
     getGameById: builder.query<Game, string>({
       query: (id) => `/jogos/${id}`,
     }),
+    purchase: builder.mutation<any, PurchasePayload>({
+      query: (body) => ({
+        url: `checkout`,
+        method: "POST",
+        body,
+      }),
+    }),
   }),
 });
 export default api;
@@ -46,4 +87,5 @@ export const {
   useGetFightingGamesQuery,
   useGetRPGGamesQuery,
   useGetGameByIdQuery,
+  usePurchaseMutation,
 } = api;
