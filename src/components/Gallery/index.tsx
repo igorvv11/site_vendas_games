@@ -6,7 +6,6 @@ import * as S from "./styles";
 import play from "../../assets/images/play.png";
 import zoom from "../../assets/images/zoom.png";
 import close from "../../assets/images/fechar.png";
-import { GalleryItem } from "../../pages/Home";
 
 type Props = {
   defaultCover: string;
@@ -76,12 +75,7 @@ const Gallery = ({ defaultCover, name, items }: Props) => {
         <S.ModalContent className="container">
           <header>
             <h4>{name}</h4>
-            <img
-              style={{ cursor: "pointer" }}
-              src={close}
-              alt="imagem fechar"
-              onClick={CloseModal}
-            />
+            <img src={close} alt="imagem fechar" onClick={CloseModal} />
           </header>
           {modal.type === "image" ? (
             <img src={modal.url} alt={name} />

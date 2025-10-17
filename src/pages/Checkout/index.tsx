@@ -1,9 +1,9 @@
-import { useEffect, useState } from "react";
+import { use, useEffect, useState } from "react";
 import * as Yup from "yup";
 import { useFormik } from "formik";
-import { useSelector } from "react-redux";
+import { useDispatch, useSelector } from "react-redux";
 import { Navigate } from "react-router-dom";
-
+import { ReactInputMask as InputMask } from "react-input-mask";
 import Button from "../../components/Button";
 import Card from "../../components/Card";
 
@@ -14,6 +14,8 @@ import * as S from "./styles";
 
 import { usePurchaseMutation } from "../../services/api";
 import { RootReducer } from "../../store";
+import { clear } from "../../store/reducers/cart";
+
 import { getTotalPrice, parsesToBrl } from "../../utils";
 
 type Installment = {
@@ -24,9 +26,10 @@ type Installment = {
 
 const Checkout = () => {
   const [payWithCard, setPayWithCard] = useState(false);
-  const [purchase, { data, isSuccess }] = usePurchaseMutation();
+  const [purchase, { data, isSuccess, isLoading }] = usePurchaseMutation();
   const { items } = useSelector((state: RootReducer) => state.cart);
   const [installments, setInstallments] = useState<Installment[]>([]);
+  const dispatch = useDispatch();
 
   const totalPrices = getTotalPrice(items);
 
@@ -85,7 +88,7 @@ const Checkout = () => {
       cardCode: Yup.string().when((values, schema) =>
         payWithCard ? schema.required("Campo obrigatório") : schema
       ),
-      installments: Yup.string().when((values, schema) =>
+      installments: Yup.number().when((values, schema) =>
         payWithCard ? schema.required("Campo obrigatório") : schema
       ),
     }),
@@ -100,7 +103,7 @@ const Checkout = () => {
           email: values.deliveryEmail,
         },
         payment: {
-          installments: 1,
+          installments: values.installments,
           card: {
             active: payWithCard,
             code: Number(values.cardCode),
@@ -111,17 +114,15 @@ const Checkout = () => {
               document: values.cpfCardOwner,
             },
             expires: {
-              month: 10,
-              year: 2025,
+              month: Number(values.expiresMonth),
+              year: Number(values.expiresYear),
             },
           },
         },
-        products: [
-          {
-            id: 1,
-            price: 200,
-          },
-        ],
+        products: items.map((item) => ({
+          id: item.id,
+          price: item.prices.current as number,
+        })),
       });
     },
   });
@@ -148,13 +149,19 @@ const Checkout = () => {
     }
   }, [totalPrices]);
 
-  if (items.length === 0) {
+  useEffect(() => {
+    if (isSuccess) {
+      dispatch(clear());
+    }
+  }, [isSuccess, dispatch]);
+
+  if (items.length === 0 && !isSuccess) {
     return <Navigate to="/" />;
   }
 
   return (
     <div className="container">
-      {isSuccess ? (
+      {isSuccess && data ? (
         <Card title="Muito obrigado">
           <p>
             É com satisfação que informamos que recebemos seu pedido com
@@ -217,14 +224,16 @@ const Checkout = () => {
               </S.InputGroup>
               <S.InputGroup>
                 <label htmlFor="cpf">CPF</label>
-                <input
+                <InputMask
                   id="cpf"
                   type="text"
                   name="cpf"
                   value={form.values.cpf}
-                  onChange={form.handleChange}
                   onBlur={form.handleBlur}
+                  onChange={form.handleChange}
                   className={checkInputHasError("cpf") ? "error" : ""}
+                  placeholder="000.000.000-00"
+                  mask="999.999.999-99"
                 />
               </S.InputGroup>
             </S.Row>
@@ -301,13 +310,13 @@ const Checkout = () => {
                         <label htmlFor="cpfCardOwner">
                           CPF do titular do cartão
                         </label>
-                        <input
+                        <InputMask
                           id="cpfCardOwner"
-                          type="text"
                           name="cpfCardOwner"
                           value={form.values.cpfCardOwner}
-                          onChange={form.handleChange}
                           onBlur={form.handleBlur}
+                          onChange={form.handleChange}
+                          mask="999.999.999-99"
                           className={
                             checkInputHasError("cpfCardOwner") ? "error" : ""
                           }
@@ -331,12 +340,12 @@ const Checkout = () => {
                       </S.InputGroup>
                       <S.InputGroup>
                         <label htmlFor="cardNumber">Número do cartão</label>
-                        <input
+                        <InputMask
                           id="cardNumber"
-                          type="text"
                           name="cardNumber"
                           value={form.values.cardNumber}
                           onChange={form.handleChange}
+                          mask="9999 9999 9999 9999"
                           onBlur={form.handleBlur}
                           className={
                             checkInputHasError("cardNumber") ? "error" : ""
@@ -345,12 +354,12 @@ const Checkout = () => {
                       </S.InputGroup>
                       <S.InputGroup maxWidth="123px">
                         <label htmlFor="expiresMonth">Mês de vencimento</label>
-                        <input
+                        <InputMask
                           id="expiresMonth"
-                          type="text"
                           name="expiresMonth"
                           value={form.values.expiresMonth}
                           onChange={form.handleChange}
+                          mask="99"
                           onBlur={form.handleBlur}
                           className={
                             checkInputHasError("expiresMonth") ? "error" : ""
@@ -359,12 +368,12 @@ const Checkout = () => {
                       </S.InputGroup>
                       <S.InputGroup maxWidth="123px">
                         <label htmlFor="expiresYear">Ano de vencimento</label>
-                        <input
+                        <InputMask
                           id="expiresYear"
-                          type="text"
                           name="expiresYear"
                           value={form.values.expiresYear}
                           onChange={form.handleChange}
+                          mask="99"
                           onBlur={form.handleBlur}
                           className={
                             checkInputHasError("expiresYear") ? "error" : ""
@@ -373,12 +382,12 @@ const Checkout = () => {
                       </S.InputGroup>
                       <S.InputGroup maxWidth="48px">
                         <label htmlFor="cardCode">CVV</label>
-                        <input
+                        <InputMask
                           id="cardCode"
-                          type="text"
                           name="cardCode"
                           value={form.values.cardCode}
                           onChange={form.handleChange}
+                          mask="999"
                           onBlur={form.handleBlur}
                           className={
                             checkInputHasError("cardCode") ? "error" : ""
@@ -426,8 +435,13 @@ const Checkout = () => {
             </>
           </Card>
 
-          <Button type="submit" title="clique aqui para finalizar a compra">
-            Finalizar compra
+          <Button
+            type="submit"
+            title="clique aqui para finalizar a compra"
+            onClick={form.handleSubmit}
+            disabled={isLoading}
+          >
+            {isLoading ? "Finalizando compra..." : "Finalizar compra"}
           </Button>
         </form>
       )}

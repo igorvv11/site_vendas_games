@@ -32,32 +32,41 @@ const Cart = () => {
     <S.CartContainer className={isOpen ? "is-open" : ""}>
       <S.Overlay onClick={closeCart} />
       <S.Sidebar>
-        <ul>
-          {items.map((item) => (
-            <S.CartItem key={item.id}>
-              <img src={item.media.thumbnail} alt={item.name} />
-              <div>
-                <h3>{item.name}</h3>
-                <Tag>{item.details.category}</Tag>
-                <Tag>{item.details.system}</Tag>
-                <span>{parsesToBrl(item.prices.current)}</span>
-              </div>
-              <button onClick={() => removeItem(item.id)} type="button" />
-            </S.CartItem>
-          ))}
-        </ul>
-        <S.Quantity> {items.length} jogo(s) no carrinho</S.Quantity>
-        <S.Prices>
-          Total de {parsesToBrl(getTotalPrice(items))}
-          <span>Em até 6x sem juros</span>
-        </S.Prices>
-        <Button
-          title="Clique aqui para finalizar sua compra"
-          type="button"
-          onClick={gotToCheckout}
-        >
-          Continuar a compra
-        </Button>
+        {items.length > 0 ? (
+          <>
+            <ul>
+              {items.map((item) => (
+                <S.CartItem key={item.id}>
+                  <img src={item.media.thumbnail} alt={item.name} />
+                  <div>
+                    <h3>{item.name}</h3>
+                    <Tag>{item.details.category}</Tag>
+                    <Tag>{item.details.system}</Tag>
+                    <span>{parsesToBrl(item.prices.current)}</span>
+                  </div>
+                  <button onClick={() => removeItem(item.id)} type="button" />
+                </S.CartItem>
+              ))}
+            </ul>
+            <S.Quantity> {items.length} jogo(s) no carrinho</S.Quantity>
+            <S.Prices>
+              Total de {parsesToBrl(getTotalPrice(items))}
+              <span>Em até 6x sem juros</span>
+            </S.Prices>
+            <Button
+              title="Clique aqui para finalizar sua compra"
+              type="button"
+              onClick={gotToCheckout}
+            >
+              Continuar a compra
+            </Button>
+          </>
+        ) : (
+          <p className="empty-cart">
+            Seu carrinho está vazio, adicione pelomenos um jogo para continuar
+            com a compra
+          </p>
+        )}
       </S.Sidebar>
     </S.CartContainer>
   );

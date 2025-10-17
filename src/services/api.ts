@@ -1,5 +1,4 @@
 import { createApi, fetchBaseQuery } from "@reduxjs/toolkit/query/react";
-import { Game } from "../pages/Home";
 
 type Product = {
   id: number;
@@ -7,7 +6,7 @@ type Product = {
 };
 
 type PurchasePayload = {
-  products: [Product];
+  products: Product[];
   billing: {
     name: string;
     email: string;
@@ -33,6 +32,10 @@ type PurchasePayload = {
     };
     installments: number;
   };
+};
+
+type PurchaseResponse = {
+  orderId: string;
 };
 
 const api = createApi({
@@ -67,7 +70,7 @@ const api = createApi({
     getGameById: builder.query<Game, string>({
       query: (id) => `/jogos/${id}`,
     }),
-    purchase: builder.mutation<any, PurchasePayload>({
+    purchase: builder.mutation<PurchaseResponse, PurchasePayload>({
       query: (body) => ({
         url: `checkout`,
         method: "POST",

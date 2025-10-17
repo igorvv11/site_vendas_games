@@ -1,5 +1,3 @@
-import { Game } from "../pages/Home";
-
 export const parsesToBrl = (amount = 0) => {
   return new Intl.NumberFormat("pt-BR", {
     style: "currency",
@@ -12,6 +10,6 @@ export const getTotalPrice = (items: Game[]) => {
     if (currentItem.prices.current) {
       return (accumulator += currentItem.prices.current);
     }
-    return 0;
+    return accumulator;
   }, 0);
 };

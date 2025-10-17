@@ -1,6 +1,7 @@
 import Tag from "../Tag";
 
 import Button from "../Button";
+import Loader from "../Loader";
 
 import { parsesToBrl } from "../../utils";
 import { useGetFeatureGamesQuery } from "../../services/api";
@@ -11,7 +12,7 @@ const Banner = () => {
   const { data: game } = useGetFeatureGamesQuery();
 
   if (!game) {
-    return <h3>Carregando...</h3>;
+    return <Loader />;
   }
 
   return (
