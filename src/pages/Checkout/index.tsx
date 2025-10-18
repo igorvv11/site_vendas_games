@@ -2,8 +2,8 @@ import { useEffect, useState } from "react";
 import * as Yup from "yup";
 import { useFormik } from "formik";
 import { useDispatch, useSelector } from "react-redux";
-import { Navigate } from "react-router-dom";
-import InputMask from "react-input-mask";
+import { Navigate, useNavigate } from "react-router-dom";
+import { IMaskInput } from "react-imask";
 
 import Button from "../../components/Button";
 import Card from "../../components/Card";
@@ -31,6 +31,7 @@ const Checkout = () => {
   const { items } = useSelector((state: RootReducer) => state.cart);
   const [installments, setInstallments] = useState<Installment[]>([]);
   const dispatch = useDispatch();
+  const navigate = useNavigate();
 
   const totalPrice = getTotalPrice(items);
 
@@ -201,6 +202,15 @@ const Checkout = () => {
               Agradecemos por escolher a EPLAY e esperamos que desfrute do seu
               jogo!
             </p>
+            <div className="margin-top">
+              <Button
+                type="button"
+                title="Voltar para a página inicial"
+                onClick={() => navigate("/")}
+              >
+                Continuar comprando
+              </Button>
+            </div>
           </>
         </Card>
       ) : (
@@ -234,15 +244,15 @@ const Checkout = () => {
                 </S.InputGroup>
                 <S.InputGroup>
                   <label htmlFor="cpf">CPF</label>
-                  <InputMask
+                  <IMaskInput
                     id="cpf"
                     type="text"
                     name="cpf"
                     value={form.values.cpf}
-                    onChange={form.handleChange}
+                    onAccept={(value: any) => form.setFieldValue("cpf", value)}
                     onBlur={form.handleBlur}
                     className={checkInputHasError("cpf") ? "error" : ""}
-                    mask="999.999.999-99"
+                    mask={"000.000.000-00"}
                   />
                 </S.InputGroup>
               </S.Row>
@@ -325,17 +335,19 @@ const Checkout = () => {
                         <label htmlFor="cpfCardOwner">
                           CPF do titular do cartão
                         </label>
-                        <InputMask
+                        <IMaskInput
                           type="text"
                           id="cpfCardOwner"
                           name="cpfCardOwner"
                           value={form.values.cpfCardOwner}
-                          onChange={form.handleChange}
+                          onAccept={(value: any) =>
+                            form.setFieldValue("cpfCardOwner", value)
+                          }
                           onBlur={form.handleBlur}
                           className={
                             checkInputHasError("cpfCardOwner") ? "error" : ""
                           }
-                          mask="999.999.999-99"
+                          mask={"000.000.000-00"}
                         />
                       </S.InputGroup>
                     </S.Row>
@@ -356,62 +368,70 @@ const Checkout = () => {
                       </S.InputGroup>
                       <S.InputGroup>
                         <label htmlFor="cardNumber">Número do cartão</label>
-                        <InputMask
+                        <IMaskInput
                           type="text"
                           id="cardNumber"
                           name="cardNumber"
                           value={form.values.cardNumber}
-                          onChange={form.handleChange}
+                          onAccept={(value: any) =>
+                            form.setFieldValue("cardNumber", value)
+                          }
                           onBlur={form.handleBlur}
                           className={
                             checkInputHasError("cardNumber") ? "error" : ""
                           }
-                          mask="9999 9999 9999 9999"
+                          mask={"0000 0000 0000 0000"}
                         />
                       </S.InputGroup>
                       <S.InputGroup maxWidth="123px">
                         <label htmlFor="expiresMonth">Mês de expiração</label>
-                        <InputMask
+                        <IMaskInput
                           type="text"
                           id="expiresMonth"
                           name="expiresMonth"
                           value={form.values.expiresMonth}
-                          onChange={form.handleChange}
+                          onAccept={(value: any) =>
+                            form.setFieldValue("expiresMonth", value)
+                          }
                           onBlur={form.handleBlur}
                           className={
                             checkInputHasError("expiresMonth") ? "error" : ""
                           }
-                          mask="99"
+                          mask={"00"}
                         />
                       </S.InputGroup>
                       <S.InputGroup maxWidth="123px">
                         <label htmlFor="expiresYear">Ano de expiração</label>
-                        <InputMask
+                        <IMaskInput
                           type="text"
                           id="expiresYear"
                           name="expiresYear"
                           value={form.values.expiresYear}
-                          onChange={form.handleChange}
+                          onAccept={(value: any) =>
+                            form.setFieldValue("expiresYear", value)
+                          }
                           onBlur={form.handleBlur}
                           className={
                             checkInputHasError("expiresYear") ? "error" : ""
                           }
-                          mask="99"
+                          mask={"00"}
                         />
                       </S.InputGroup>
                       <S.InputGroup maxWidth="48px">
                         <label htmlFor="cardCode">CVV</label>
-                        <InputMask
+                        <IMaskInput
                           type="text"
                           id="cardCode"
                           name="cardCode"
                           value={form.values.cardCode}
-                          onChange={form.handleChange}
+                          onAccept={(value: any) =>
+                            form.setFieldValue("cardCode", value)
+                          }
                           onBlur={form.handleBlur}
                           className={
                             checkInputHasError("cardCode") ? "error" : ""
                           }
-                          mask="999"
+                          mask={"000"}
                         />
                       </S.InputGroup>
                     </S.Row>
@@ -456,7 +476,6 @@ const Checkout = () => {
           </Card>
           <Button
             type="submit"
-            onClick={form.handleSubmit}
             title="Clique aqui para finalizar a compra"
             disabled={isLoading}
           >
